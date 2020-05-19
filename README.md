@@ -25,4 +25,4 @@ Or basically just send a POST request to the server
 
 ## License
 
-[![WTFPL 2.0][license-image]][license-url]
+[![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)
