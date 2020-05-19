@@ -22,3 +22,7 @@ $ curl -X POST -d "hello world" -o- [url_of_the_instance]
 hewwo wowwd
 ```
 Or basically just send a POST request to the server
+
+## License
+
+[![WTFPL 2.0][license-image]][license-url]
