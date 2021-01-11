@@ -7,6 +7,11 @@ app.use(express.urlencoded({
     extended: true
 }))
 
+app.use(express.text())
+
+app.use(express.json())
+
+
 const replacements = [{
         old: /r/g,
         new: "w",
@@ -48,13 +53,41 @@ const hewwoify = (string) => {
     return string
 }
 
-app.post('/', (req, res) => {
-    const data = Object.keys(req.body)
-    if (data.length > 0) {
-        res.send(hewwoify(data[0]) + '\n')
-    } else {
-        res.send('You must send data!\n')
+const wecursiveHewwoify = (elts, keys) => {
+    for (var key of keys) {
+        try {
+            elts[key] = hewwoify(elts[key])
+        }
+        catch {
+            wecursiveHewwoify(elts[key], Object.keys(elts[key]))
+        }
     }
+}
+
+
+
+
+app.post('/', (req, res) => {
+    var result = ""
+    for (const headerValue of req.headers["content-type"].split(";")) {
+        switch(headerValue.trim()) {
+        case "text/plain": //intuitive
+            result = hewwoify(req.body) + '\n'
+            break;
+        case "application/x-www-form-urlencoded": //commandline friendly
+            result = hewwoify((Object.keys(req.body)[0])) + '\n'
+            break;
+        case "application/json": //real
+            wecursiveHewwoify(req.body, Object.keys(req.body))
+            result = req.body
+            break;
+        default:
+            break;
+        }
+    }
+    if (result === "")
+        result = "Request contained an empty payload or used an unsupported content-type header"
+    res.send(result)     
 })
 
 app.get('/', (req, res) => {
